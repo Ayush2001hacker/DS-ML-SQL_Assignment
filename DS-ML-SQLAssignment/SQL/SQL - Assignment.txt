@@ -1,0 +1,44 @@
+SQL :-
+
+Topic - Condition + String matching + logical operator
+
+Solution 1>  SELECT CustomerID,FirstName,LastName,City
+  	     FROM customers
+ 	     WHERE FirstName LIKE "N%" OR City = "Prague";
+
+Solution 2>  SELECT trackID,Name,Composer,UnitPrice
+  	     FROM tracks
+ 	     WHERE UnitPrice BETWEEN 0 AND 1
+             AND COMPOSER NOT LIKE "%T%";
+
+Topic - Group By, Order By
+
+Solution 1> SELECT InvoiceDate,
+            SUM(Total) AS SUM,
+       	    AVG(Total) AS Average
+  	    FROM Invoices
+ 	    WHERE InvoiceDate BETWEEN "2020-06-01 00:00:00" AND "2020-06-30 11:59:59"
+ 	    GROUP BY InvoiceDate;
+
+Solution 2> SELECT TrackId,count(Quantity) as TotalQuantity 
+            FROM invoice_items
+	    GROUP BY TrackId
+	    ORDER BY (count(Quantity)) DESC;
+
+Topic - Join/Subqueries
+
+Solution 1> SELECT at.ArtistId, at.Name
+            FROM artists AS at
+            LEFT JOIN albums AS ab ON at.ArtistId = ab.ArtistId
+            LEFT JOIN tracks AS tc ON ab.AlbumId = tc.AlbumId
+            WHERE tc.TrackId NOT IN (
+            SELECT TrackId
+            FROM playlist_track);
+
+Solution 2> SELECT ab.AlbumId, ab.Title, COUNT(pt.playlistID) AS PlaylistCount
+            FROM albums ab
+            LEFT JOIN tracks ts ON ab.albumID = ts.albumid
+            LEFT JOIN playlist_track pt ON ts.trackid = pt.trackid
+            GROUP BY ab.AlbumId, ab.Title
+            HAVING COUNT(pt.playlistID) > 10;
+
